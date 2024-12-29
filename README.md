@@ -2,24 +2,22 @@
 
 I'm hungry and like to eat well. What can I say? 🤷‍♂️
 
-This script allows you to make a reservation at a restaurant on Resy. It's ideally run on a cron job, but can be run
+This script allows you to make a reservation at a restaurant on Resy. It's ideally run on a cron/task scheduler job, but can be run
 manually as well. Imagine picking your day and ideal time, and then letting the script do the rest. It's that easy. No
 more wait-lists, no more checking the app every 5 minutes. Just set it and forget it.
 
-https://github.com/robertjdominguez/ez-resy/assets/24390149/68a8b7be-0ac8-454a-94b3-d84a6f1c3bd2
+Original credit goes to Rob Dominguez and this repo: https://github.com/robertjdominguez/ez-resy
 
 ## Motivation
 
-One day, [Highlands Bar & Grill](https://highlandsbarandgrill.com/) will reopen. And when it does, I want to be there. I
-want to be there so bad that I wrote this script to make a reservation for me. Goddammit, I want that
-[cornbread](https://thelocalpalate.com/recipes/highlands-cornbread/).
+For a while, COQODAQ was a super hot restaurant in NYC and it was impossible to get a reservation without some automation.
 
 ## Installation
 
 Clone the repository:
 
 ```bash
-git clone https://github.com/robertjdominguez/ez-resy.git
+git clone https://github.com/atamanch/ez-resy.git
 ```
 
 Install the dependencies:
@@ -28,9 +26,11 @@ Install the dependencies:
 npm i
 ```
 
+https://docs.npmjs.com/downloading-and-installing-node-js-and-npm
+
 ## Configuration
 
-You'll need a `.env` file that contains the following:
+You'll need a `.env` file that contains the below, see the example .env file in the root of the repo:
 
 ```env
 VENUE_ID=
@@ -52,25 +52,32 @@ AUTH_TOKEN=
 | `PAYMENT_ID` | You'll need this from your account. More details below.                |
 | `AUTH_TOKEN` | Same as above — just a JWT you can easily find.                        |
 
+These instructions are current as of 12/29/2024.
+
 ### Venue ID
 
 This is the ID of the restaurant you want to eat at. You can find this by going to the Network tab in your browser's
-inspector and searching for `venue?filter` after navigating to the restaurant's page.
+inspector and searching for `venue?filter` after navigating to the restaurant's page. In the case of COQODAQ, this was a 5 digit value (76033).
 
 ### Payment ID
 
 You'll need to find your payment ID. This is a little tricky, but not too bad. Again, in the Network tab, find the
-request that's made after you authenticate. You can search for `user` in the requests and find the one that has your
-user information. `payment_method` is in there as an object and has a field of `id`. That's what you want.
+request that's made after you authenticate. You can search for `payment_method` in the requests and find the object called `user` from api.resy.com/2/user.
+A `payment_method_id` field is in the object and the value is what you want.
 
 ### Auth Token
 
-This is easier to find. You can head to Application > Cookies > https://resy.com and find the `authToken` cookie. This
-does expire after a while, so you'll need to update it every so often.
+This is easier to find. To view cookies in Chrome, open Chrome Settings (right-click on your browser window) > Inspect > Applications > Storage > Cookies, and select the https://resy.com cookie.
+Find the `authToken` name, you want the value. This does expire after a while, so you'll need to update it every so often.
 
 ## Usage
 
-After adding your configuration, you can run the script with:
+After adding your .env configuration file, you have two options.
+
+If you are on a **Windows OS**, you can run the .bat file in the utils directory, and you can use Windows Task Scheduler to import the .xml file so that the script is run on a frequent basis.
+Check the logs directory for output from the job. If it is successful, you'll likely get an email from Resy with your reservation details as well.
+
+On other OSes, you can run a script with:
 
 ```bash
 npm run start
